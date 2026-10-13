@@ -10,7 +10,9 @@ static void printUsage()
     cerr << "usage: ./mygit <command> [<args>]\n"
               << "commands:\n"
               << "  init                     Create an empty repository in the current directory\n"
-              << "  hash-object [-w] <file>  Compute the SHA-1 of a file and optionally store it as a blob"
+              << "  hash-object [-w] <file>  Compute the SHA-1 of a file and optionally store it as a blob\n"
+              << "  cat-file (-p|-s|-t) <sha> Show the content, size or type of a stored object\n"
+              << "  write-tree               Store the current directory as a tree object"
               << endl;
 }
 
@@ -32,6 +34,14 @@ int main(int argc, char *argv[])
     if (command == "hash-object")
     {
         return cmdHashObject(args);
+    }
+    if (command == "cat-file")
+    {
+        return cmdCatFile(args);
+    }
+    if (command == "write-tree")
+    {
+        return cmdWriteTree(args);
     }
 
     cerr << "mygit: '" << command << "' is not a mygit command" << endl;
