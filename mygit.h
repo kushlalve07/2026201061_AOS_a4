@@ -1,6 +1,7 @@
 #ifndef MYGIT_H
 #define MYGIT_H
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -23,6 +24,13 @@ struct TreeEntry
     bool isDirectory;
 };
 
+// One staged file. The index maps each repo-relative path to its entry.
+struct IndexEntry
+{
+    std::string mode;
+    std::string sha;
+};
+
 bool readFile(const std::string &path, std::string &content);
 std::string toHex(const std::string &raw);
 std::string fromHex(const std::string &hex);
@@ -33,11 +41,14 @@ bool isValidSha(const std::string &sha);
 bool readObject(const std::string &sha, std::string &type, std::string &content);
 bool parseTree(const std::string &content, std::vector<TreeEntry> &entries);
 void printTree(const std::vector<TreeEntry> &entries, bool nameOnly);
+bool readIndex(std::map<std::string, IndexEntry> &index);
+bool writeIndex(const std::map<std::string, IndexEntry> &index);
 
 int cmdInit(const std::vector<std::string> &args);
 int cmdHashObject(const std::vector<std::string> &args);
 int cmdCatFile(const std::vector<std::string> &args);
 int cmdWriteTree(const std::vector<std::string> &args);
 int cmdLsTree(const std::vector<std::string> &args);
+int cmdAdd(const std::vector<std::string> &args);
 
 #endif
