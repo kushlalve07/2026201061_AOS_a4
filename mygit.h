@@ -54,6 +54,7 @@ bool storeTree(std::vector<TreeEntry> entries, std::string &sha);
 bool parseCommit(const std::string &content, Commit &commit);
 bool readHead(std::string &commitSha, std::string &refPath);
 bool updateHead(const std::string &commitSha);
+bool setHead(const std::string &content);
 bool readIndex(std::map<std::string, IndexEntry> &index);
 bool writeIndex(const std::map<std::string, IndexEntry> &index);
 
@@ -65,5 +66,6 @@ int cmdLsTree(const std::vector<std::string> &args);
 int cmdAdd(const std::vector<std::string> &args);
 int cmdCommit(const std::vector<std::string> &args);
 int cmdLog(const std::vector<std::string> &args);
+int cmdCheckout(const std::vector<std::string> &args);
 
 #endif

@@ -116,3 +116,9 @@ bool updateHead(const string &commitSha)
     }
     return writeFileAtomic(refPath, commitSha + "\n");
 }
+
+// Overwrites HEAD with either a commit SHA (detached) or "ref: refs/heads/<branch>".
+bool setHead(const string &content)
+{
+    return writeFileAtomic(HEAD_FILE, content + "\n");
+}

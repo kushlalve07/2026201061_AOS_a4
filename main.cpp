@@ -16,7 +16,8 @@ static void printUsage()
               << "  ls-tree [--name-only] <sha> List the entries of a tree object\n"
               << "  add <path>...            Stage files or directories (use . for everything)\n"
               << "  commit [-m <message>]    Record the staged files as a new commit\n"
-              << "  log                      Show the commit history, newest first"
+              << "  log                      Show the commit history, newest first\n"
+              << "  checkout [-f] <sha|branch> Restore the files of a commit"
               << endl;
 }
 
@@ -62,6 +63,10 @@ int main(int argc, char *argv[])
     if (command == "log")
     {
         return cmdLog(args);
+    }
+    if (command == "checkout")
+    {
+        return cmdCheckout(args);
     }
 
     cerr << "mygit: '" << command << "' is not a mygit command" << endl;

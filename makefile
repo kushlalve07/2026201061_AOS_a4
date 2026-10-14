@@ -9,7 +9,7 @@ OPENSSL_LIBS := $(shell pkg-config --libs libcrypto 2>/dev/null || echo -lcrypto
 CXXFLAGS += $(OPENSSL_CFLAGS)
 LDLIBS = $(OPENSSL_LIBS) -lz
 
-SRCS = main.cpp init.cpp objects.cpp hash_object.cpp cat_file.cpp write_tree.cpp ls_tree.cpp index.cpp add.cpp refs.cpp commit.cpp log.cpp
+SRCS = main.cpp init.cpp objects.cpp hash_object.cpp cat_file.cpp write_tree.cpp ls_tree.cpp index.cpp add.cpp refs.cpp commit.cpp log.cpp checkout.cpp
 OBJS = $(SRCS:.cpp=.o)
 TARGET = mygit
 
