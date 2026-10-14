@@ -15,7 +15,8 @@ static void printUsage()
               << "  write-tree               Store the current directory as a tree object\n"
               << "  ls-tree [--name-only] <sha> List the entries of a tree object\n"
               << "  add <path>...            Stage files or directories (use . for everything)\n"
-              << "  commit [-m <message>]    Record the staged files as a new commit"
+              << "  commit [-m <message>]    Record the staged files as a new commit\n"
+              << "  log                      Show the commit history, newest first"
               << endl;
 }
 
@@ -57,6 +58,10 @@ int main(int argc, char *argv[])
     if (command == "commit")
     {
         return cmdCommit(args);
+    }
+    if (command == "log")
+    {
+        return cmdLog(args);
     }
 
     cerr << "mygit: '" << command << "' is not a mygit command" << endl;

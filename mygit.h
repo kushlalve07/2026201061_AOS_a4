@@ -64,5 +64,6 @@ int cmdWriteTree(const std::vector<std::string> &args);
 int cmdLsTree(const std::vector<std::string> &args);
 int cmdAdd(const std::vector<std::string> &args);
 int cmdCommit(const std::vector<std::string> &args);
+int cmdLog(const std::vector<std::string> &args);
 
 #endif
