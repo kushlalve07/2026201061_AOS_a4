@@ -7,14 +7,6 @@ using namespace std;
 
 namespace fs = filesystem;
 
-struct TreeEntry
-{
-    string mode;
-    string name;
-    string sha;
-    bool isDirectory;
-};
-
 // Git orders tree entries by name, comparing a directory as if its name ended in '/'.
 static bool entryLess(const TreeEntry &a, const TreeEntry &b)
 {
@@ -67,7 +59,7 @@ static bool writeTree(const fs::path &dir, string &sha, bool &isEmpty)
             {
                 continue;
             }
-            entry.mode = "40000";
+            entry.mode = TREE_MODE;
             entry.isDirectory = true;
         }
         else if (fs::is_regular_file(status))

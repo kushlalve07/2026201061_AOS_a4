@@ -219,3 +219,33 @@ bool hashObject(const string &type, const string &content, bool write, string &s
     }
     return true;
 }
+
+// Tree content is a sequence of "<mode> <name>\0<20 raw SHA bytes>" entries.
+bool parseTree(const string &content, vector<TreeEntry> &entries)
+{
+    entries.clear();
+    size_t pos = 0;
+    while (pos < content.size())
+    {
+        const size_t space = content.find(' ', pos);
+        if (space == string::npos)
+        {
+            return false;
+        }
+        const size_t nameEnd = content.find('\0', space + 1);
+        if (nameEnd == string::npos || nameEnd + 1 + SHA_DIGEST_LENGTH > content.size())
+        {
+            return false;
+        }
+
+        TreeEntry entry;
+        entry.mode = content.substr(pos, space - pos);
+        entry.name = content.substr(space + 1, nameEnd - space - 1);
+        entry.sha = toHex(content.substr(nameEnd + 1, SHA_DIGEST_LENGTH));
+        entry.isDirectory = (entry.mode == TREE_MODE);
+        entries.push_back(entry);
+
+        pos = nameEnd + 1 + SHA_DIGEST_LENGTH;
+    }
+    return true;
+}

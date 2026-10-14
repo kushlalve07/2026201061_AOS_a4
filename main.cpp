@@ -12,7 +12,8 @@ static void printUsage()
               << "  init                     Create an empty repository in the current directory\n"
               << "  hash-object [-w] <file>  Compute the SHA-1 of a file and optionally store it as a blob\n"
               << "  cat-file (-p|-s|-t) <sha> Show the content, size or type of a stored object\n"
-              << "  write-tree               Store the current directory as a tree object"
+              << "  write-tree               Store the current directory as a tree object\n"
+              << "  ls-tree [--name-only] <sha> List the entries of a tree object"
               << endl;
 }
 
@@ -42,6 +43,10 @@ int main(int argc, char *argv[])
     if (command == "write-tree")
     {
         return cmdWriteTree(args);
+    }
+    if (command == "ls-tree")
+    {
+        return cmdLsTree(args);
     }
 
     cerr << "mygit: '" << command << "' is not a mygit command" << endl;

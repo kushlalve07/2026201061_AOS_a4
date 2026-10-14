@@ -35,6 +35,17 @@ int cmdCatFile(const vector<string> &args)
     {
         cout << content.size() << endl;
     }
+    else if (type == "tree")
+    {
+        // Tree content is binary, so show it in ls-tree form instead.
+        vector<TreeEntry> entries;
+        if (!parseTree(content, entries))
+        {
+            cerr << "error: tree object " << sha << " is corrupt" << endl;
+            return 1;
+        }
+        printTree(entries, false);
+    }
     else
     {
         cout.write(content.data(), content.size());
