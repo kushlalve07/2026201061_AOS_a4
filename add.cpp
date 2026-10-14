@@ -56,6 +56,18 @@ static bool stageFile(const string &path, const fs::file_status &status, map<str
     }
     const bool executable = (status.permissions() & fs::perms::owner_exec) != fs::perms::none;
     entry.mode = executable ? "100755" : "100644";
+
+    // A path cannot be both a file and a directory in one snapshot, so drop
+    // stale entries for "a" when staging "a/b", and for "a/..." when staging "a".
+    for (size_t slash = path.find('/'); slash != string::npos; slash = path.find('/', slash + 1))
+    {
+        index.erase(path.substr(0, slash));
+    }
+    for (auto it = index.lower_bound(path + "/"); it != index.end() && isUnder(it->first, path);)
+    {
+        it = index.erase(it);
+    }
+
     index[path] = entry;
     return true;
 }

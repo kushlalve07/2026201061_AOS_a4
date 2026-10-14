@@ -14,7 +14,8 @@ static void printUsage()
               << "  cat-file (-p|-s|-t) <sha> Show the content, size or type of a stored object\n"
               << "  write-tree               Store the current directory as a tree object\n"
               << "  ls-tree [--name-only] <sha> List the entries of a tree object\n"
-              << "  add <path>...            Stage files or directories (use . for everything)"
+              << "  add <path>...            Stage files or directories (use . for everything)\n"
+              << "  commit [-m <message>]    Record the staged files as a new commit"
               << endl;
 }
 
@@ -52,6 +53,10 @@ int main(int argc, char *argv[])
     if (command == "add")
     {
         return cmdAdd(args);
+    }
+    if (command == "commit")
+    {
+        return cmdCommit(args);
     }
 
     cerr << "mygit: '" << command << "' is not a mygit command" << endl;

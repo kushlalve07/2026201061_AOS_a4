@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <filesystem>
 #include <iostream>
 using namespace std;
@@ -6,14 +5,6 @@ using namespace std;
 #include "mygit.h"
 
 namespace fs = filesystem;
-
-// Git orders tree entries by name, comparing a directory as if its name ended in '/'.
-static bool entryLess(const TreeEntry &a, const TreeEntry &b)
-{
-    const string keyA = a.isDirectory ? a.name + "/" : a.name;
-    const string keyB = b.isDirectory ? b.name + "/" : b.name;
-    return keyA < keyB;
-}
 
 // Stores `dir` as a tree object (children first) and returns its SHA.
 // isEmpty tells the caller that the directory holds nothing trackable.
@@ -90,19 +81,8 @@ static bool writeTree(const fs::path &dir, string &sha, bool &isEmpty)
         return false;
     }
 
-    sort(entries.begin(), entries.end(), entryLess);
-
-    // Each entry is "<mode> <name>\0" followed by the 20 raw bytes of the SHA.
-    string content;
-    for (const TreeEntry &entry : entries)
-    {
-        content += entry.mode + " " + entry.name;
-        content.push_back('\0');
-        content += fromHex(entry.sha);
-    }
-
     isEmpty = entries.empty();
-    return hashObject("tree", content, true, sha);
+    return storeTree(entries, sha);
 }
 
 int cmdWriteTree(const vector<string> &args)

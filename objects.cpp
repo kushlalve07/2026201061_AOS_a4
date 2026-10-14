@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -248,4 +249,81 @@ bool parseTree(const string &content, vector<TreeEntry> &entries)
         pos = nameEnd + 1 + SHA_DIGEST_LENGTH;
     }
     return true;
+}
+
+// Git orders tree entries by name, comparing a directory as if its name ended in '/'.
+static bool entryLess(const TreeEntry &a, const TreeEntry &b)
+{
+    const string keyA = a.isDirectory ? a.name + "/" : a.name;
+    const string keyB = b.isDirectory ? b.name + "/" : b.name;
+    return keyA < keyB;
+}
+
+// Sorts the entries, serialises each as "<mode> <name>\0<20 raw SHA bytes>"
+// and stores the result as a tree object.
+bool storeTree(vector<TreeEntry> entries, string &sha)
+{
+    sort(entries.begin(), entries.end(), entryLess);
+
+    string content;
+    for (const TreeEntry &entry : entries)
+    {
+        content += entry.mode + " " + entry.name;
+        content.push_back('\0');
+        content += fromHex(entry.sha);
+    }
+    return hashObject("tree", content, true, sha);
+}
+
+// Commit content is a block of "<key> <value>" header lines, a blank line,
+// then the message.
+bool parseCommit(const string &content, Commit &commit)
+{
+    commit = Commit();
+    size_t pos = 0;
+    while (pos < content.size())
+    {
+        size_t lineEnd = content.find('\n', pos);
+        if (lineEnd == string::npos)
+        {
+            lineEnd = content.size();
+        }
+        const string line = content.substr(pos, lineEnd - pos);
+        pos = lineEnd + 1;
+
+        if (line.empty())
+        {
+            break;
+        }
+
+        const size_t space = line.find(' ');
+        if (space == string::npos)
+        {
+            return false;
+        }
+        const string key = line.substr(0, space);
+        const string value = line.substr(space + 1);
+        if (key == "tree")
+        {
+            commit.tree = value;
+        }
+        else if (key == "parent")
+        {
+            commit.parents.push_back(value);
+        }
+        else if (key == "author")
+        {
+            commit.author = value;
+        }
+        else if (key == "committer")
+        {
+            commit.committer = value;
+        }
+    }
+
+    if (pos < content.size())
+    {
+        commit.message = content.substr(pos);
+    }
+    return isValidSha(commit.tree);
 }

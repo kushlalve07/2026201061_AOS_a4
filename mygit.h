@@ -24,6 +24,15 @@ struct TreeEntry
     bool isDirectory;
 };
 
+struct Commit
+{
+    std::string tree;
+    std::vector<std::string> parents;
+    std::string author;
+    std::string committer;
+    std::string message;
+};
+
 // One staged file. The index maps each repo-relative path to its entry.
 struct IndexEntry
 {
@@ -41,6 +50,10 @@ bool isValidSha(const std::string &sha);
 bool readObject(const std::string &sha, std::string &type, std::string &content);
 bool parseTree(const std::string &content, std::vector<TreeEntry> &entries);
 void printTree(const std::vector<TreeEntry> &entries, bool nameOnly);
+bool storeTree(std::vector<TreeEntry> entries, std::string &sha);
+bool parseCommit(const std::string &content, Commit &commit);
+bool readHead(std::string &commitSha, std::string &refPath);
+bool updateHead(const std::string &commitSha);
 bool readIndex(std::map<std::string, IndexEntry> &index);
 bool writeIndex(const std::map<std::string, IndexEntry> &index);
 
@@ -50,5 +63,6 @@ int cmdCatFile(const std::vector<std::string> &args);
 int cmdWriteTree(const std::vector<std::string> &args);
 int cmdLsTree(const std::vector<std::string> &args);
 int cmdAdd(const std::vector<std::string> &args);
+int cmdCommit(const std::vector<std::string> &args);
 
 #endif
